@@ -11,6 +11,8 @@ import (
 	"net/url"
 	"strings"
 	"sync"
+
+	"github.com/mjlefevre/sanoja/internal/browser"
 )
 
 // Error types
@@ -146,7 +148,14 @@ func (c *Client) fetchVideoInfo(videoID string) (string, error) {
 	}
 
 	videoURL := fmt.Sprintf("https://www.youtube.com/watch?v=%s", videoID)
-	resp, err := c.httpClient.Get(videoURL)
+	req, err := http.NewRequest("GET", videoURL, nil)
+	if err != nil {
+		return "", &ErrVideoUnavailable{VideoID: videoID}
+	}
+
+	browser.SetDefaultHeaders(req)
+
+	resp, err := c.httpClient.Do(req)
 	if err != nil {
 		return "", &ErrVideoUnavailable{VideoID: videoID}
 	}
@@ -246,7 +255,14 @@ func extractTranscriptData(videoInfo string) ([]Transcript, error) {
 }
 
 func (c *Client) fetchTranscript(transcript Transcript) ([]TranscriptEntry, error) {
-	resp, err := c.httpClient.Get(transcript.BaseURL)
+	req, err := http.NewRequest("GET", transcript.BaseURL, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	browser.SetDefaultHeaders(req)
+
+	resp, err := c.httpClient.Do(req)
 	if err != nil {
 		return nil, err
 	}
