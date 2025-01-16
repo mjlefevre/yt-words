@@ -1,21 +1,26 @@
 package handlers
 
 import (
+	"bytes"
 	"encoding/json"
+	"html/template"
 	"net/http"
 
 	"github.com/mjlefevre/sanoja/pkg/transcript"
+	"github.com/mjlefevre/sanoja/web/templates"
 )
 
 // TranscriptHandler handles transcript-related HTTP requests
 type TranscriptHandler struct {
 	client *transcript.Client
+	port   int
 }
 
 // NewTranscriptHandler creates a new TranscriptHandler
-func NewTranscriptHandler() *TranscriptHandler {
+func NewTranscriptHandler(port int) *TranscriptHandler {
 	return &TranscriptHandler{
 		client: transcript.NewClient(),
+		port:   port,
 	}
 }
 
@@ -26,27 +31,49 @@ func (h *TranscriptHandler) GetTranscript(w http.ResponseWriter, r *http.Request
 		return
 	}
 
+	// Check for bookmarklet request
+	if _, wantBookmarklet := r.URL.Query()["bookmarklet"]; wantBookmarklet {
+		tmpl, err := template.ParseFS(templates.Files, "bookmarklet.html")
+		if err != nil {
+			http.Error(w, "Error loading bookmarklet template", http.StatusInternalServerError)
+			return
+		}
+
+		// Replace PORT in template with actual port
+		var buf bytes.Buffer
+		err = tmpl.Execute(&buf, struct{ Port int }{Port: h.port})
+		if err != nil {
+			http.Error(w, "Error processing template", http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "text/html")
+		w.Write(buf.Bytes())
+		return
+	}
+
 	// Check for help query parameter
 	if _, wantHelp := r.URL.Query()["help"]; wantHelp {
 		w.Header().Set("Content-Type", "text/plain")
 		helpText := `Sanoja Transcript API Usage:
 
 Fetch a transcript:
-  GET /transcript?v=VIDEO_ID
-  GET /transcript?url=YOUTUBE_URL
-  GET /transcript?videoId=VIDEO_ID
+  GET /ytt?v=VIDEO_ID
+  GET /ytt?url=YOUTUBE_URL
+  GET /ytt?videoId=VIDEO_ID
 
 Parameters:
-  v         - YouTube video ID
-  url       - Full YouTube video URL
-  videoId   - Alternative to 'v' parameter
-  json      - Add this flag to get JSON response
-  help      - Show this help message
-
+  v           - YouTube video ID
+  url         - Full YouTube video URL
+  videoId     - Alternative to 'v' parameter
+  json        - Add this flag to get JSON response
+  bookmarklet - Get a bookmarklet for easy transcript fetching from browser
+  help        - Show this help message
+  
 Examples:
-  /transcript?v=k82RwXqZHY8
-  /transcript?url=https://www.youtube.com/watch?v=k82RwXqZHY8
-  /transcript?v=k82RwXqZHY8&json
+  /ytt?v=k82RwXqZHY8
+  /ytt?url=https://www.youtube.com/watch?v=k82RwXqZHY8
+  /ytt?v=k82RwXqZHY8&json
 
 Response Formats:
   - Default: Plain text

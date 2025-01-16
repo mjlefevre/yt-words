@@ -7,8 +7,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var ytCmd = &cobra.Command{
-	Use:   "yt [VIDEO]",
+var yttCmd = &cobra.Command{
+	Use:   "ytt [VIDEO]",
 	Short: "Get a YouTube video transcript from a YouTube video ID or URL",
 	Long: `Get a YouTube video transcript and generate output.
 
@@ -17,8 +17,8 @@ VIDEO can be either:
   - A full YouTube URL (e.g., https://www.youtube.com/watch?v=k82RwXqZHY8)
 
 Examples:
-  sanoja yt k82RwXqZHY8
-  sanoja yt https://www.youtube.com/watch?v=k82RwXqZHY8`,
+  sanoja ytt k82RwXqZHY8
+  sanoja ytt https://www.youtube.com/watch?v=k82RwXqZHY8`,
 	Args: cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		input := args[0]

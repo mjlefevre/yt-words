@@ -9,10 +9,11 @@ import (
 )
 
 func main() {
-	transcriptHandler := handlers.NewTranscriptHandler()
+	port := 8080
+	transcriptHandler := handlers.NewTranscriptHandler(port)
 
 	// Register routes
-	http.HandleFunc("/api/transcript", transcriptHandler.GetTranscript)
+	http.HandleFunc("/ytt", transcriptHandler.GetTranscript)
 
 	// Add a simple health check endpoint
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
@@ -20,9 +21,9 @@ func main() {
 		fmt.Fprint(w, "OK")
 	})
 
-	port := ":8080"
-	log.Printf("Starting server on port %s", port)
-	if err := http.ListenAndServe(port, nil); err != nil {
+	addr := fmt.Sprintf(":%d", port)
+	log.Printf("Starting server on port %d", port)
+	if err := http.ListenAndServe(addr, nil); err != nil {
 		log.Fatalf("Server failed to start: %v", err)
 	}
 }

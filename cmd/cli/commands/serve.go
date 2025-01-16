@@ -19,6 +19,10 @@ var serveCmd = &cobra.Command{
 	Long: `Start the web server that provides transcript functionality via HTTP.
 By default, the server runs on port 3000. Use --port flag to specify a different port.
 
+The server exposes the following endpoints:
+  GET /ytt - Get YouTube video transcripts
+  GET /ytt?help - View API documentation
+
 Example:
   sanoja serve
   sanoja serve --port 8080`,
@@ -26,10 +30,10 @@ Example:
 		addr := fmt.Sprintf(":%d", port)
 
 		// Create handlers
-		transcriptHandler := handlers.NewTranscriptHandler()
+		transcriptHandler := handlers.NewTranscriptHandler(port)
 
 		// Setup routes
-		http.HandleFunc("/transcript", transcriptHandler.GetTranscript)
+		http.HandleFunc("/ytt", transcriptHandler.GetTranscript)
 
 		log.Printf("Starting server on http://localhost%s", addr)
 		return http.ListenAndServe(addr, nil)

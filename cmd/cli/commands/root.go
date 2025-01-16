@@ -10,8 +10,8 @@ var rootCmd = &cobra.Command{
 	Long: `Sanoja is a tool for processing YouTube video transcripts.
     
 Example usage:
-  sanoja yt https://www.youtube.com/watch?v=abc123xyz
-  sanoja yt abc123xyz`,
+  sanoja ytt https://www.youtube.com/watch?v=abc123xyz
+  sanoja ytt abc123xyz`,
 	Run: func(cmd *cobra.Command, args []string) {
 		cmd.Help()
 	},
@@ -22,5 +22,5 @@ func Execute() error {
 }
 
 func init() {
-	rootCmd.AddCommand(ytCmd)
+	rootCmd.AddCommand(yttCmd)
 }

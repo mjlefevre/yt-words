@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sanoja Transcript Bookmarklet</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            line-height: 1.5;
+        }
+        .bookmarklet {
+            color: #0066cc;
+            text-decoration: underline;
+        }
+        .bookmarklet:hover {
+            color: #003366;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sanoja Transcript Bookmarklet</h1>
+    
+    <a class="bookmarklet" href="javascript:(function(){
+        if (window.location.hostname === 'www.youtube.com') {
+            window.location.href = 'http://localhost:{{.Port}}/ytt?url=' + encodeURIComponent(window.location.href);
+        } else {
+            alert('This bookmarklet only works on YouTube video pages');
+        }
+    })()">Get Transcript</a>
+
+    <p>To use:</p>
+    <ol>
+        <li>Drag the "Get Transcript" link above to your browser's bookmarks bar</li>
+        <li>When watching a YouTube video, click the bookmark to get its transcript</li>
+    </ol>
+
+    <p>The bookmarklet will automatically redirect you from any YouTube video page to its transcript.</p>
+
+    <p><strong>Note:</strong> Make sure the Sanoja server is running (<code>sanoja serve</code>) before using the bookmarklet.</p>
+</body>
+</html>
