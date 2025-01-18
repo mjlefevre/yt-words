@@ -16,7 +16,7 @@ def fix_packages():
             content = f.read()
         
         # Replace package declaration
-        content = re.sub(r'package commands', 'package main', content)
+        content = re.sub(r'package main', 'package cmd', content)
         
         # Replace old import paths
         content = re.sub(
