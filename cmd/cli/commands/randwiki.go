@@ -9,6 +9,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/mjlefevre/sanoja/internal/browser"
 	"github.com/spf13/cobra"
+	"golang.org/x/net/html"
 )
 
 var textOnly bool
@@ -68,9 +69,15 @@ Examples:
 		}
 
 		// Remove unwanted elements
-		content.Find("table").Remove()                                    // Remove tables
-		content.Find("style").Remove()                                    // Remove style tags
-		content.Find("script").Remove()                                   // Remove script tags
+		//content.Find("table").Remove()
+		content.Find("style").Remove()  // Remove style tags
+		content.Find("script").Remove() // Remove script tags
+		// Remove HTML comments
+		content.Contents().Each(func(i int, s *goquery.Selection) {
+			if html.CommentNode == s.Get(0).Type {
+				s.Remove()
+			}
+		})
 		content.Find(".mw-editsection").Remove()                          // Remove edit links
 		content.Find(".reference").Remove()                               // Remove reference numbers
 		content.Find(".reflist").Remove()                                 // Remove references section
