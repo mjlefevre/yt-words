@@ -1,11 +1,11 @@
-package commands
+package main
 
 import (
 	"fmt"
 	"log"
 	"net/http"
 
-	"github.com/mjlefevre/sanoja/web/handlers"
+	"github.com/mjlefevre/sanoja/internal/handlers"
 	"github.com/spf13/cobra"
 )
 

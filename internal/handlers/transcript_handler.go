@@ -6,8 +6,8 @@ import (
 	"html/template"
 	"net/http"
 
+	"github.com/mjlefevre/sanoja/internal/templates"
 	"github.com/mjlefevre/sanoja/pkg/transcript"
-	"github.com/mjlefevre/sanoja/web/templates"
 )
 
 // TranscriptHandler handles transcript-related HTTP requests
